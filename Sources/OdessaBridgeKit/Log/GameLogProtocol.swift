@@ -9,7 +9,7 @@ import Foundation
 
 public class GameLog {
     
-    var isLogOn = false
+    public var isLogOn = false
     
     func log(_ string: String, status: LogEventStatus = .message) {
         if isLogOn {
