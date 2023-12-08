@@ -3,7 +3,7 @@
 
 public class OdessaBridgeSeanse: GameLog {
     
-    override init() {
+    public override init() {
         super.init()
         log("Seanse is started", status: .start)
     }
@@ -12,7 +12,7 @@ public class OdessaBridgeSeanse: GameLog {
         log("Seanse is finished", status: .finish)
     }
 
-    func startGame() {
+    public func startGame() {
         log("Game is started", status: .start)
     }
     
