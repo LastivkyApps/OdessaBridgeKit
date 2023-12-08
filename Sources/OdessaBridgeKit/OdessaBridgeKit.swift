@@ -3,7 +3,7 @@
 
 public class OdessaBridgeSeanse: GameLog {
     
-    init() {
+    override init() {
         super.init()
         log("Seanse is started", status: .start)
     }
