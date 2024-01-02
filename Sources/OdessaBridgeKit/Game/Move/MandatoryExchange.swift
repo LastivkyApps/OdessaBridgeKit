@@ -10,13 +10,17 @@ import Foundation
 public class MandatoryExchange: Move {
     
     let cardIn: Card
+    let onRelease: (Card) -> Void
     
-    init(cardIn: Card) {
+    init(cardIn: Card, onRelease: @escaping (Card) -> Void) {
         self.cardIn = cardIn
+        self.onRelease = onRelease
     }
     
     func make(for player: Player) {
-        ()
+        let cardOut = player.getRandomCard()
+        player.pushCards([cardIn])
+        onRelease(cardOut)
     }
     
 }

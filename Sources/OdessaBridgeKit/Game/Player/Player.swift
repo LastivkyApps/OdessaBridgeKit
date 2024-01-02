@@ -20,4 +20,10 @@ protocol Player: AnyObject {
     
     func pushCards(_ cards: [Card])
     
+    func chooseExchangeCard() -> Card
+    
+    func choosePlayerForExchange() -> Int
+    
+    func getRandomCard() -> Card
+    
 }

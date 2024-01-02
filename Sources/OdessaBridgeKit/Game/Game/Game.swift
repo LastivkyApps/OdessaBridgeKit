@@ -50,6 +50,10 @@ class Game {
 
 extension Game: GamePannel {
     
+    var playersCount: Int {
+        return players.count
+    }
+    
     func getCards(count: Int = 1, for playerIndex: Int) {
         if deck.count >= count {
             var cards = [Card]()
@@ -71,16 +75,23 @@ extension Game: GamePannel {
         setPuttedCardsEffect([field[0]])
     }
     
+    func makeExchange(with player: Int, for card: Card, onRelease: @escaping (Card) -> Void) {
+        players[player].stack.insert(MandatoryExchange(cardIn: card, onRelease: onRelease), at: 0)
+        players[player].inAct()
+        log?.log("Player\(currentMoveIndex) push card \(card.description) for player\(player)")
+    }
+    
     private func setPuttedCardsEffect(_ cards: [Card]) {
         let lastCard = cards.last!
         switch lastCard {
         case .two(suit: let suit):
             if cards.count % 2 == 1 {
                 direction *= -1
+                log?.log("Reverse direction")
             }
             players[currentMoveIndex].stack.insert(Skip(), at: 0)
         case .three(suit: let suit):
-            players[currentMoveIndex].stack.insert(Skip(), at: 0)
+            (0..<cards.count).forEach({ _ in players[currentMoveIndex].stack.insert(Exchange(), at: 0) })
         case .four(suit: let suit):
             players[currentMoveIndex].stack.insert(Skip(), at: 0)
         case .five(suit: let suit):

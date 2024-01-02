@@ -28,4 +28,24 @@ class RandomBotPlayer: Player {
         cardsInHand += cards
     }
     
+    func getRandomCard() -> Card {
+        let card = cardsInHand.randomElement()!
+        cardsInHand.removeAll(where: { $0 == card })
+        return card
+    }
+    
+    func chooseExchangeCard() -> Card {
+        let card = cardsInHand.randomElement()!
+        cardsInHand.removeAll(where: { $0 == card })
+        return card
+    }
+    
+    func choosePlayerForExchange() -> Int {
+        var player = index!
+        while player == index {
+            player = (0..<gamePannel!.playersCount).randomElement()!
+        }
+        return player
+    }
+    
 }
