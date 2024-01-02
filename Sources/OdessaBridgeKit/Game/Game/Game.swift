@@ -13,7 +13,7 @@ class Game {
     
     private var currentMoveIndex = 0
     
-    private let players: [Player]
+    private var players: [Player]
     
     private var deck = [Card]()
     private var field = [Card]()
@@ -43,6 +43,10 @@ class Game {
     private func callMove() {
         players[currentMoveIndex].inAct()
         if players.count > 1 {
+            if players.count == 1 {
+                log?.log("finish")
+                return
+            }
             callMove()
         }
     }
@@ -73,7 +77,10 @@ extension Game: GamePannel {
             players[playerIndex].pushCards(cards)
             log?.log("Player\(playerIndex) get cards: \(cards.map({ $0.description }))")
         } else {
-            // TODO: change deck and recall
+            let lastInField = field.removeLast()
+            deck += field
+            field = [lastInField]
+            deck = deck.shuffled()
         }
     }
     
@@ -171,8 +178,35 @@ extension Game: GamePannel {
         case .calendar:
             players[currentMoveIndex].stack.insert(Skip(), at: 0)
         case .ourFather:
+            if field.count > 1 && field[field.count - 2].value == .calendar {
+                win()
+                return
+            }
+            if field.count > 2 && field[field.count - 2].value == .joker && field[field.count - 3].value == .joker {
+                win()
+                return
+            }
+            if field.count > 4 && field[field.count - 2].value == field[field.count - 3].value && field[field.count - 4].value == field[field.count - 3].value && field[field.count - 4].value == field[field.count - 5].value {
+                win()
+                return
+            }
             players[currentMoveIndex].stack.insert(Skip(), at: 0)
         }
+        if lastCard.value != .six && players[currentMoveIndex].cardsInHand.isEmpty {
+            win()
+        }
+    }
+    
+    private func win() {
+        log?.log("Player\(currentMoveIndex) WIN!!!")
+        players.remove(at: currentMoveIndex)
+        players.enumerated().forEach({ index, player in
+            player.index = index
+        })
+        if direction < 0 {
+            currentMoveIndex -= 1
+        }
+        currentMoveIndex = (currentMoveIndex + players.count) % players.count
     }
     
 }

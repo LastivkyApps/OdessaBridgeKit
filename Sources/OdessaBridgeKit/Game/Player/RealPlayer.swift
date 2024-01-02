@@ -81,6 +81,20 @@ class RealPlayer: Player {
                 return puttedCards
             }
         }
+        let puttedQueens = cardsInHand.filter({ $0.value == .queen })
+        for puttedCard in puttedQueens {
+            cardsInHand.removeAll(where: { $0 == puttedCard })
+        }
+        if !puttedQueens.isEmpty {
+            return puttedQueens
+        }
+        let puttedJacks = cardsInHand.filter({ $0.value == .jack })
+        for puttedCard in puttedJacks {
+            cardsInHand.removeAll(where: { $0 == puttedCard })
+        }
+        if !puttedJacks.isEmpty {
+            return puttedJacks
+        }
         return nil
     }
     
