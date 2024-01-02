@@ -10,9 +10,14 @@ import Foundation
 protocol Player: AnyObject {
     
     var index: Int? { get set }
+    var gamePannel: GamePannel? { get set }
     
     var stack: [Move] { get set }
     
+    var cardsInHand: [Card] { get }
+    
     func inAct()
+    
+    func pushCards(_ cards: [Card])
     
 }

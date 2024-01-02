@@ -10,7 +10,7 @@ import Foundation
 public class Skip: Move {
     
     func make(for player: Player) {
-        ()
+        player.gamePannel?.nextPlayer(playerIndex: player.index!)
     }
     
 }

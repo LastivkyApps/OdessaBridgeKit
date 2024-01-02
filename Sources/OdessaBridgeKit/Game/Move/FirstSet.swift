@@ -16,7 +16,12 @@ public class FirstSet: Move {
     }
     
     func make(for player: Player) {
-        ()
+        player.gamePannel?.getCards(count: isLast ? 4 : 5, for: player.index!)
+        if isLast {
+            player.gamePannel?.putFirstCard()
+        } else {
+            player.stack.insert(Skip(), at: 0)
+        }
     }
     
 }

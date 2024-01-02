@@ -12,8 +12,11 @@ class RealPlayer: Player {
     let pannel: UserPannel
     
     var index: Int?
+    weak var gamePannel: GamePannel?
     
     var stack = [Move]()
+    
+    private(set) var cardsInHand = [Card]()
     
     init(pannel: UserPannel) {
         self.pannel = pannel
@@ -26,6 +29,10 @@ class RealPlayer: Player {
         let move = stack.removeFirst()
         move.make(for: self)
         // TODO: pannel logic
+    }
+    
+    func pushCards(_ cards: [Card]) {
+        cardsInHand += cards
     }
     
 }

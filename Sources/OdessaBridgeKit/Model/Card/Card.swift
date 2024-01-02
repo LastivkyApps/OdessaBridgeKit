@@ -26,6 +26,43 @@ public enum Card: Equatable {
     case calendar
     case ourFather
     
+    var description: String {
+        switch self {
+        case .two(let suit):
+            "2\(suit.description)"
+        case .three(let suit):
+            "3\(suit.description)"
+        case .four(let suit):
+            "4\(suit.description)"
+        case .five(let suit):
+            "5\(suit.description)"
+        case .six(let suit):
+            "6\(suit.description)"
+        case .seven(let suit):
+            "7\(suit.description)"
+        case .eight(let suit):
+            "8\(suit.description)"
+        case .nine(let suit):
+            "9\(suit.description)"
+        case .ten(let suit):
+            "10\(suit.description)"
+        case .jack(let suit):
+            "J\(suit.description)"
+        case .queen(let suit):
+            "Q\(suit.description)"
+        case .king(let suit):
+            "K\(suit.description)"
+        case .ace(let suit):
+            "A\(suit.description)"
+        case .joker(let color):
+            "Joker\(color.description)"
+        case .calendar:
+            "calendar"
+        case .ourFather:
+            "ourFather"
+        }
+    }
+    
     static var deck: [Card] {
         return [
             .two(suit: .cross), .two(suit: .peak), .two(suit: .chirva), .two(suit: .tambourine),

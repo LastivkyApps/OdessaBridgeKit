@@ -8,5 +8,16 @@
 import Foundation
 
 public enum CardColor {
+    
     case red, black
+    
+    var description: String {
+        switch self {
+        case .red:
+            "🟥"
+        case .black:
+            "⬛️"
+        }
+    }
+    
 }

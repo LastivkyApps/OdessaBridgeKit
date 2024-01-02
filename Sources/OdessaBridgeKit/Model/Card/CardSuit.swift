@@ -20,4 +20,17 @@ public enum CardSuit {
         }
     }
     
+    var description: String {
+        switch self {
+        case .cross:
+            "♣️"
+        case .peak:
+            "♠️"
+        case .chirva:
+            "♥️"
+        case .tambourine:
+            "♦️"
+        }
+    }
+    
 }
