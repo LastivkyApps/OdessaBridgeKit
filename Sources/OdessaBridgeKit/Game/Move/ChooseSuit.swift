@@ -9,8 +9,8 @@ import Foundation
 
 public class ChooseSuit: Move {
     
-    func make(for player: Player) {
-        let suit = player.chooseSuit()
+    func make(for player: Player) async {
+        let suit = await player.chooseSuit()
         player.gamePannel?.hardcodeSuit(suit)
         player.stack.insert(Skip(), at: 0)
     }

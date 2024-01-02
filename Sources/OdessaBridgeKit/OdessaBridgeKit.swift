@@ -18,7 +18,13 @@ public class OdessaBridgeSeanse: GameLog {
         let game = GameFactory().onePlayerGame(pannel: pannel, botsCount: botsCount)
         currentGame = game
         game.log = self
-        game.start()
+        if #available(macOS 10.15, *) {
+            Task {
+                await game.start()
+            }
+        } else {
+            // Fallback on earlier versions
+        }
     }
     
 }

@@ -9,10 +9,10 @@ import Foundation
 
 public class Exchange: Move {
     
-    func make(for player: Player) {
-        let card = player.chooseExchangeCard()
-        let playerForExchange = player.choosePlayerForExchange()
-        player.gamePannel?.makeExchange(with: playerForExchange, for: card, onRelease: { newCard in
+    func make(for player: Player) async {
+        let card = await player.chooseExchangeCard()
+        let playerForExchange = await player.choosePlayerForExchange()
+        await player.gamePannel?.makeExchange(with: playerForExchange, for: card, onRelease: { newCard in
             player.pushCards([newCard])
             if player.stack.isEmpty {
                 player.stack.insert(Skip(), at: 0)

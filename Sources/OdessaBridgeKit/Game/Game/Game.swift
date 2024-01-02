@@ -25,25 +25,25 @@ class Game {
         self.players = players
     }
     
-    func start() {
+    func start() async {
         log?.log("Game is started", status: .start)
-        firstSet()
+        await firstSet()
     }
     
-    private func firstSet() {
+    private func firstSet() async {
         deck = Card.deck.shuffled()
         players.enumerated().forEach({ index, player in
             player.index = index
             player.gamePannel = self
             player.stack.append(FirstSet(isLast: index == players.count - 1))
         })
-        callMove()
+        await callMove()
     }
     
-    private func callMove() {
-        players[currentMoveIndex].inAct()
+    private func callMove() async {
+        await players[currentMoveIndex].inAct()
         if players.count > 1 {
-            callMove()
+            await callMove()
         } else {
             log?.log("Game finished", status: .finish)
             players.forEach({ $0.gameFinishedNotify() })
@@ -107,9 +107,9 @@ extension Game: GamePannel {
         players.forEach({ $0.cardsPuttedNotify(by: currentMoveIndex, card: cards) })
     }
     
-    func makeExchange(with player: Int, for card: Card, onRelease: @escaping (Card) -> Void) {
+    func makeExchange(with player: Int, for card: Card, onRelease: @escaping (Card) -> Void) async {
         players[player].stack.insert(MandatoryExchange(cardIn: card, onRelease: onRelease), at: 0)
-        players[player].inAct()
+        await players[player].inAct()
         log?.log("Player\(currentMoveIndex) push card \(card.description) for player\(player)")
         players.forEach({ $0.exchangeNotify(from: currentMoveIndex, to: player) })
     }

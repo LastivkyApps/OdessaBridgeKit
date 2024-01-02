@@ -22,13 +22,13 @@ class RealPlayer: Player {
         self.pannel = pannel
     }
     
-    func inAct() {
+    func inAct() async {
         guard !stack.isEmpty else {
             stack.append(PutCard())
             return
         }
         let move = stack.removeFirst()
-        move.make(for: self)
+        await move.make(for: self)
         // TODO: pannel logic
     }
     
@@ -48,7 +48,7 @@ class RealPlayer: Player {
         return card
     }
     
-    func choosePlayerForExchange() -> Int {
+    func choosePlayerForExchange() async -> Int {
         var player = index!
         while player == index {
             player = (0..<gamePannel!.playersCount).randomElement()!
@@ -56,11 +56,11 @@ class RealPlayer: Player {
         return player
     }
     
-    func chooseSuit() -> CardSuit {
+    func chooseSuit() async -> CardSuit {
         return [CardSuit.cross, .peak, .chirva, .tambourine].randomElement()!
     }
     
-    func chooseCards() -> [Card]? {
+    func chooseCards() async -> [Card]? {
         let suits = gamePannel!.suit
         for suit in suits {
             if let card = cardsInHand.first(where: { $0.suit.contains(suit) }) {
