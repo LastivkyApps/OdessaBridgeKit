@@ -8,4 +8,11 @@
 import Foundation
 
 protocol Player: AnyObject {
+    
+    var index: Int? { get set }
+    
+    var stack: [Move] { get set }
+    
+    func inAct()
+    
 }
