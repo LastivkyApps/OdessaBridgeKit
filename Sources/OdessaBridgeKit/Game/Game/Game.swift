@@ -19,6 +19,7 @@ class Game {
     private var field = [Card]()
     
     private var direction = 1
+    private var hardcoddedSuite: CardSuit?
     
     init(players: [Player]) {
         self.players = players
@@ -67,6 +68,7 @@ extension Game: GamePannel {
     
     func nextPlayer(playerIndex: Int) {
         currentMoveIndex = (playerIndex + direction) % players.count
+        log?.log("Next move is in player\(currentMoveIndex)")
     }
     
     func putFirstCard() {
@@ -81,40 +83,71 @@ extension Game: GamePannel {
         log?.log("Player\(currentMoveIndex) push card \(card.description) for player\(player)")
     }
     
+    func hardcodeSuit(_ suit: CardSuit) {
+        hardcoddedSuite = suit
+    }
+    
     private func setPuttedCardsEffect(_ cards: [Card]) {
         let lastCard = cards.last!
         switch lastCard {
-        case .two(suit: let suit):
+        case .two(suit: _):
             if cards.count % 2 == 1 {
                 direction *= -1
                 log?.log("Reverse direction")
             }
             players[currentMoveIndex].stack.insert(Skip(), at: 0)
-        case .three(suit: let suit):
+        case .three(suit: _):
             (0..<cards.count).forEach({ _ in players[currentMoveIndex].stack.insert(Exchange(), at: 0) })
-        case .four(suit: let suit):
+        case .four(suit: _):
             players[currentMoveIndex].stack.insert(Skip(), at: 0)
-        case .five(suit: let suit):
+        case .five(suit: _):
             players[currentMoveIndex].stack.insert(Skip(), at: 0)
-        case .six(suit: let suit):
+        case .six(suit: _):
+            players[currentMoveIndex].stack.insert(PutCard(), at: 0)
+        case .seven(suit: _):
+            var skipCount = 0
+            var skipIndex = 0
+            while skipCount != cards.count {
+                skipIndex += direction
+                if (currentMoveIndex + skipIndex) % players.count == currentMoveIndex {
+                    players[currentMoveIndex].stack.append(Skip())
+                    continue
+                }
+                players[(currentMoveIndex + skipIndex) % players.count].stack.insert(TakeCard(count: 2), at: 0)
+                players[(currentMoveIndex + skipIndex) % players.count].stack.insert(Skip(), at: 0)
+                skipCount += 1
+            }
+            players[currentMoveIndex].stack.append(Skip())
+        case .eight(suit: _):
+            players[(currentMoveIndex + direction) % players.count].stack.insert(TakeCard(count: cards.count), at: 0)
+            players[currentMoveIndex].stack.append(Skip())
+        case .nine(suit: _):
             players[currentMoveIndex].stack.insert(Skip(), at: 0)
-        case .seven(suit: let suit):
+        case .ten(suit: _):
             players[currentMoveIndex].stack.insert(Skip(), at: 0)
-        case .eight(suit: let suit):
+        case .jack(suit: _):
+            players[currentMoveIndex].stack.insert(ChooseSuit(), at: 0)
+        case .queen(suit: _):
             players[currentMoveIndex].stack.insert(Skip(), at: 0)
-        case .nine(suit: let suit):
+        case .king(suit: _):
+            if cards.contains(where: { $0 == .king(suit: .chirva) }) {
+                players[(currentMoveIndex + direction) % players.count].stack.insert(TakeCard(count: 5), at: 0)
+            }
             players[currentMoveIndex].stack.insert(Skip(), at: 0)
-        case .ten(suit: let suit):
-            players[currentMoveIndex].stack.insert(Skip(), at: 0)
-        case .jack(suit: let suit):
-            players[currentMoveIndex].stack.insert(Skip(), at: 0)
-        case .queen(suit: let suit):
-            players[currentMoveIndex].stack.insert(Skip(), at: 0)
-        case .king(suit: let suit):
-            players[currentMoveIndex].stack.insert(Skip(), at: 0)
-        case .ace(suit: let suit):
-            players[currentMoveIndex].stack.insert(Skip(), at: 0)
-        case .joker(color: let color):
+        case .ace(suit: _):
+            var skipCount = 0
+            var skipIndex = 0
+            while skipCount != cards.count {
+                skipIndex += direction
+                if (currentMoveIndex + skipIndex) % players.count == currentMoveIndex {
+                    players[currentMoveIndex].stack.append(Skip())
+                    continue
+                }
+                players[(currentMoveIndex + skipIndex) % players.count].stack.insert(Skip(), at: 0)
+                skipCount += 1
+            }
+            players[currentMoveIndex].stack.append(Skip())
+        case .joker(color: _):
             players[currentMoveIndex].stack.insert(Skip(), at: 0)
         case .calendar:
             players[currentMoveIndex].stack.insert(Skip(), at: 0)

@@ -26,4 +26,6 @@ protocol Player: AnyObject {
     
     func getRandomCard() -> Card
     
+    func chooseSuit() -> CardSuit
+    
 }

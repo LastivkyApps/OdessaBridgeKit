@@ -16,7 +16,7 @@ public class TakeCard: Move {
     }
     
     func make(for player: Player) {
-        ()
+        player.gamePannel?.getCards(count: count, for: player.index!)
     }
     
 }

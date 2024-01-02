@@ -18,6 +18,7 @@ class RandomBotPlayer: Player {
     
     func inAct() {
         guard !stack.isEmpty else {
+            stack.append(PutCard())
             return
         }
         let move = stack.removeFirst()
@@ -46,6 +47,10 @@ class RandomBotPlayer: Player {
             player = (0..<gamePannel!.playersCount).randomElement()!
         }
         return player
+    }
+    
+    func chooseSuit() -> CardSuit {
+        return [CardSuit.cross, .peak, .chirva, .tambourine].randomElement()!
     }
     
 }
