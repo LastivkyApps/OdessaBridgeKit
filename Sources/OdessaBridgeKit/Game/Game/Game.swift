@@ -55,6 +55,17 @@ extension Game: GamePannel {
         return players.count
     }
     
+    var suit: [CardSuit] {
+        if let hardcoddedSuite {
+            return [hardcoddedSuite]
+        }
+        return (field.last?.suit ?? [.cross])
+    }
+    
+    var cardValue: [CardValue] {
+        return field.last?.possibleValue ?? [.two]
+    }
+    
     func getCards(count: Int = 1, for playerIndex: Int) {
         if deck.count >= count {
             var cards = [Card]()
@@ -67,14 +78,21 @@ extension Game: GamePannel {
     }
     
     func nextPlayer(playerIndex: Int) {
-        currentMoveIndex = (playerIndex + direction) % players.count
-        log?.log("Next move is in player\(currentMoveIndex)")
+        currentMoveIndex = (playerIndex + direction + players.count) % players.count
+        log?.log("Next move is in player\(currentMoveIndex) with cards \(players[currentMoveIndex].cardsInHand.map({ $0.description }))")
     }
     
     func putFirstCard() {
         field.append(deck.removeFirst())
         log?.log("Card \(field[0].description) was putted automatically")
         setPuttedCardsEffect([field[0]])
+    }
+    
+    func putCards(_ cards: [Card]) {
+        hardcoddedSuite = nil
+        log?.log("Player\(currentMoveIndex) put cards \(cards.map({ $0.description }))")
+        field += cards
+        setPuttedCardsEffect(cards)
     }
     
     func makeExchange(with player: Int, for card: Card, onRelease: @escaping (Card) -> Void) {
@@ -85,6 +103,7 @@ extension Game: GamePannel {
     
     func hardcodeSuit(_ suit: CardSuit) {
         hardcoddedSuite = suit
+        log?.log("Player\(currentMoveIndex) choose \(suit) suit")
     }
     
     private func setPuttedCardsEffect(_ cards: [Card]) {
@@ -109,17 +128,17 @@ extension Game: GamePannel {
             var skipIndex = 0
             while skipCount != cards.count {
                 skipIndex += direction
-                if (currentMoveIndex + skipIndex) % players.count == currentMoveIndex {
+                if (currentMoveIndex + skipIndex + players.count) % players.count == currentMoveIndex {
                     players[currentMoveIndex].stack.append(Skip())
                     continue
                 }
-                players[(currentMoveIndex + skipIndex) % players.count].stack.insert(TakeCard(count: 2), at: 0)
-                players[(currentMoveIndex + skipIndex) % players.count].stack.insert(Skip(), at: 0)
+                players[(currentMoveIndex + skipIndex + players.count) % players.count].stack.insert(TakeCard(count: 2), at: 0)
+                players[(currentMoveIndex + skipIndex + players.count) % players.count].stack.append(Skip())
                 skipCount += 1
             }
             players[currentMoveIndex].stack.append(Skip())
         case .eight(suit: _):
-            players[(currentMoveIndex + direction) % players.count].stack.insert(TakeCard(count: cards.count), at: 0)
+            players[(currentMoveIndex + direction + players.count) % players.count].stack.insert(TakeCard(count: cards.count), at: 0)
             players[currentMoveIndex].stack.append(Skip())
         case .nine(suit: _):
             players[currentMoveIndex].stack.insert(Skip(), at: 0)
@@ -131,7 +150,7 @@ extension Game: GamePannel {
             players[currentMoveIndex].stack.insert(Skip(), at: 0)
         case .king(suit: _):
             if cards.contains(where: { $0 == .king(suit: .chirva) }) {
-                players[(currentMoveIndex + direction) % players.count].stack.insert(TakeCard(count: 5), at: 0)
+                players[(currentMoveIndex + direction + players.count) % players.count].stack.insert(TakeCard(count: 5), at: 0)
             }
             players[currentMoveIndex].stack.insert(Skip(), at: 0)
         case .ace(suit: _):
@@ -139,11 +158,11 @@ extension Game: GamePannel {
             var skipIndex = 0
             while skipCount != cards.count {
                 skipIndex += direction
-                if (currentMoveIndex + skipIndex) % players.count == currentMoveIndex {
+                if (currentMoveIndex + skipIndex + players.count) % players.count == currentMoveIndex {
                     players[currentMoveIndex].stack.append(Skip())
                     continue
                 }
-                players[(currentMoveIndex + skipIndex) % players.count].stack.insert(Skip(), at: 0)
+                players[(currentMoveIndex + skipIndex + players.count) % players.count].stack.insert(Skip(), at: 0)
                 skipCount += 1
             }
             players[currentMoveIndex].stack.append(Skip())

@@ -28,4 +28,6 @@ protocol Player: AnyObject {
     
     func chooseSuit() -> CardSuit
     
+    func chooseCards() -> [Card]?
+    
 }

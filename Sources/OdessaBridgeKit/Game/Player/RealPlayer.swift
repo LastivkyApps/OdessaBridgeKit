@@ -60,4 +60,28 @@ class RealPlayer: Player {
         return [CardSuit.cross, .peak, .chirva, .tambourine].randomElement()!
     }
     
+    func chooseCards() -> [Card]? {
+        let suits = gamePannel!.suit
+        for suit in suits {
+            if let card = cardsInHand.first(where: { $0.suit.contains(suit) }) {
+                let puttedCards = cardsInHand.filter({ card.value == $0.value })
+                for puttedCard in puttedCards {
+                    cardsInHand.removeAll(where: { $0 == puttedCard })
+                }
+                return puttedCards.sorted(by: { first, _ in first == card })
+            }
+        }
+        let values = gamePannel!.cardValue
+        for value in values {
+            let puttedCards = cardsInHand.filter({ $0.value == value })
+            for puttedCard in puttedCards {
+                cardsInHand.removeAll(where: { $0 == puttedCard })
+            }
+            if !puttedCards.isEmpty {
+                return puttedCards
+            }
+        }
+        return nil
+    }
+    
 }

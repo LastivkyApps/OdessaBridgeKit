@@ -20,4 +20,13 @@ public enum CardColor {
         }
     }
     
+    var suit: [CardSuit] {
+        switch self {
+        case .red:
+            [CardSuit.chirva, .tambourine]
+        case .black:
+            [CardSuit.cross, .peak]
+        }
+    }
+    
 }
