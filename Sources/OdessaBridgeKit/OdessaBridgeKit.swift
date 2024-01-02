@@ -3,6 +3,8 @@
 
 public class OdessaBridgeSeanse: GameLog {
     
+    private var currentGame: Game?
+    
     public override init() {
         super.init()
         log("Seanse is started", status: .start)
@@ -12,8 +14,11 @@ public class OdessaBridgeSeanse: GameLog {
         log("Seanse is finished", status: .finish)
     }
 
-    public func startGame() {
-        log("Game is started", status: .start)
+    public func startSingleGame(pannel: UserPannel, botsCount: Int) {
+        let game = GameFactory().onePlayerGame(pannel: pannel, botsCount: botsCount)
+        currentGame = game
+        game.log = self
+        game.start()
     }
     
 }
