@@ -43,11 +43,9 @@ class Game {
     private func callMove() {
         players[currentMoveIndex].inAct()
         if players.count > 1 {
-            if players.count == 1 {
-                log?.log("finish")
-                return
-            }
             callMove()
+        } else {
+            log?.log("Game finished", status: .finish)
         }
     }
     
