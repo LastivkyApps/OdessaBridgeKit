@@ -30,4 +30,16 @@ protocol Player: AnyObject {
     
     func chooseCards() -> [Card]?
     
+    
+    func gameFinishedNotify()
+    func getCardsNotify(player: Int, count: Int)
+    func deckRefreshNotify()
+    func moveTransferNotify(to plyaer: Int)
+    func firstCardPuttedNotify(card: Card)
+    func cardsPuttedNotify(by player: Int, card: [Card])
+    func exchangeNotify(from player1: Int, to player2: Int)
+    func hardcodeSuitNotify(newSuit: CardSuit)
+    func playerWinNotify(_ player: Int)
+    func reverseNotify()
+    
 }
