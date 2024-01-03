@@ -7,6 +7,7 @@
 
 import Foundation
 
+@available(iOS 13.0.0, *)
 class GameFactory {
     
     func onePlayerGame(pannel: UserPannel, botsCount: Int) -> Game {

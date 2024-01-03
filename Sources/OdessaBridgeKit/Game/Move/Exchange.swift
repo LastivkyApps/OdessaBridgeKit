@@ -7,6 +7,7 @@
 
 import Foundation
 
+@available(iOS 13.0.0, *)
 public class Exchange: Move {
     
     func make(for player: Player) async {

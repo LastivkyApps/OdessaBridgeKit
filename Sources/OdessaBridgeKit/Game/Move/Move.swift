@@ -8,5 +8,6 @@
 import Foundation
 
 protocol Move {
+    @available(iOS 13.0.0, *)
     func make(for player: Player) async
 }

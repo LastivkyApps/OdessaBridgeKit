@@ -2,6 +2,7 @@
 // https://docs.swift.org/swift-book
 
 @available(macOS 10.15, *)
+@available(iOS 16.0, *)
 public class OdessaBridgeSeanse: GameLog {
     
     private var currentGame: Game?

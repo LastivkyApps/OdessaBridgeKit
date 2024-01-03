@@ -7,11 +7,14 @@
 
 import Foundation
 
+@available(iOS 13.0.0, *)
 public protocol UserPannel: AnyObject {
     func setIndex(_ index: Int)
     func pushCards(_ cards: [Card])
     func getCard(_ card: Card)
+    @available(iOS 13.0.0, *)
     func chooseExchangeCard() async -> Card
+    @available(iOS 13.0.0, *)
     func choosePlayerForExchange() async -> Int
     func chooseSuit() async -> CardSuit
     func chooseCards() async -> [Card]?

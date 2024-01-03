@@ -7,6 +7,7 @@
 
 import Foundation
 
+@available(iOS 13.0.0, *)
 public class TakeCard: Move {
     
     let count: Int

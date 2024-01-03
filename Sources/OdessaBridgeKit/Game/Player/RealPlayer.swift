@@ -7,6 +7,7 @@
 
 import Foundation
 
+@available(iOS 13.0.0, *)
 class RealPlayer: Player {
     
     let pannel: UserPannel

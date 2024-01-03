@@ -7,6 +7,7 @@
 
 import Foundation
 
+@available(iOS 13.0.0, *)
 class Game {
     
     var log: GameLog?
@@ -52,6 +53,7 @@ class Game {
     
 }
 
+@available(iOS 13.0.0, *)
 extension Game: GamePannel {
     
     var playersCount: Int {

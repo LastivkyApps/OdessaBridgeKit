@@ -7,6 +7,7 @@
 
 import Foundation
 
+@available(iOS 13.0.0, *)
 protocol Player: AnyObject {
     
     var index: Int? { get set }
