@@ -16,4 +16,11 @@ class GameFactory {
         return game
     }
     
+    func onePlayerCleverGame(pannel: UserPannel, botsCount: Int) -> Game {
+        let player = RealPlayer(pannel: pannel)
+        let bots = (0..<botsCount).map({ _ in CleverBotPlayer() })
+        let game = Game(players: ([player] + bots).shuffled())
+        return game
+    }
+    
 }

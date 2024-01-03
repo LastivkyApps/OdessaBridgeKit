@@ -28,4 +28,17 @@ public class OdessaBridgeSeanse: GameLog {
         }
     }
     
+    public func startSingleCleverGame(pannel: UserPannel, botsCount: Int) {
+        let game = GameFactory().onePlayerCleverGame(pannel: pannel, botsCount: botsCount)
+        currentGame = game
+        game.log = self
+        if #available(iOS 13.0, *) {
+            Task {
+                await game.start()
+            }
+        } else {
+            // Fallback on earlier versions
+        }
+    }
+    
 }
