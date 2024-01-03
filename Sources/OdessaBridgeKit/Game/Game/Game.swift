@@ -131,7 +131,8 @@ extension Game: GamePannel {
             }
             players[currentMoveIndex].stack.insert(Skip(), at: 0)
         case .three(suit: _):
-            (0..<cards.count).forEach({ _ in players[currentMoveIndex].stack.insert(Exchange(), at: 0) })
+            players[currentMoveIndex].stack.insert(Skip(), at: 0)
+            // (0..<cards.count).forEach({ _ in players[currentMoveIndex].stack.insert(Exchange(), at: 0) })
         case .four(suit: _):
             players[currentMoveIndex].stack.insert(Skip(), at: 0)
         case .five(suit: _):
