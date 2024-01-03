@@ -11,7 +11,11 @@ class RealPlayer: Player {
     
     let pannel: UserPannel
     
-    var index: Int?
+    var index: Int? {
+        didSet {
+            pannel.setIndex(index!)
+        }
+    }
     weak var gamePannel: GamePannel?
     
     var stack = [Move]()
@@ -22,80 +26,87 @@ class RealPlayer: Player {
         self.pannel = pannel
     }
     
-    func inAct() {
+    func inAct() async {
         guard !stack.isEmpty else {
             stack.append(PutCard())
             return
         }
         let move = stack.removeFirst()
-        move.make(for: self)
-        // TODO: pannel logic
+        await move.make(for: self)
     }
     
     func pushCards(_ cards: [Card]) {
         cardsInHand += cards
+        pannel.pushCards(cards)
     }
     
     func getRandomCard() -> Card {
         let card = cardsInHand.randomElement()!
         cardsInHand.removeAll(where: { $0 == card })
+        pannel.getCard(card)
         return card
     }
     
-    func chooseExchangeCard() -> Card {
-        let card = cardsInHand.randomElement()!
-        cardsInHand.removeAll(where: { $0 == card })
-        return card
+    func chooseExchangeCard() async -> Card {
+        await pannel.chooseExchangeCard()
     }
     
-    func choosePlayerForExchange() -> Int {
-        var player = index!
-        while player == index {
-            player = (0..<gamePannel!.playersCount).randomElement()!
-        }
-        return player
+    func choosePlayerForExchange() async -> Int {
+        await pannel.choosePlayerForExchange()
     }
     
-    func chooseSuit() -> CardSuit {
-        return [CardSuit.cross, .peak, .chirva, .tambourine].randomElement()!
+    func chooseSuit() async -> CardSuit {
+        await pannel.chooseSuit()
     }
     
-    func chooseCards() -> [Card]? {
-        let suits = gamePannel!.suit
-        for suit in suits {
-            if let card = cardsInHand.first(where: { $0.suit.contains(suit) }) {
-                let puttedCards = cardsInHand.filter({ card.value == $0.value })
-                for puttedCard in puttedCards {
-                    cardsInHand.removeAll(where: { $0 == puttedCard })
-                }
-                return puttedCards.sorted(by: { first, _ in first == card })
+    func chooseCards() async -> [Card]? {
+        let cards = await pannel.chooseCards()
+        if let cards {
+            for card in cards {
+                cardsInHand.removeAll(where: { $0 == card })
             }
         }
-        let values = gamePannel!.cardValue
-        for value in values {
-            let puttedCards = cardsInHand.filter({ $0.value == value })
-            for puttedCard in puttedCards {
-                cardsInHand.removeAll(where: { $0 == puttedCard })
-            }
-            if !puttedCards.isEmpty {
-                return puttedCards
-            }
-        }
-        let puttedQueens = cardsInHand.filter({ $0.value == .queen })
-        for puttedCard in puttedQueens {
-            cardsInHand.removeAll(where: { $0 == puttedCard })
-        }
-        if !puttedQueens.isEmpty {
-            return puttedQueens
-        }
-        let puttedJacks = cardsInHand.filter({ $0.value == .jack })
-        for puttedCard in puttedJacks {
-            cardsInHand.removeAll(where: { $0 == puttedCard })
-        }
-        if !puttedJacks.isEmpty {
-            return puttedJacks
-        }
-        return nil
+        return cards
+    }
+    
+    func gameFinishedNotify() {
+        pannel.gameFinishedNotify()
+    }
+    
+    func getCardsNotify(player: Int, count: Int) {
+        pannel.getCardsNotify(player: player, count: count)
+    }
+    
+    func deckRefreshNotify() {
+        pannel.deckRefreshNotify()
+    }
+    
+    func moveTransferNotify(to plyaer: Int) {
+        pannel.moveTransferNotify(to: plyaer)
+    }
+    
+    func firstCardPuttedNotify(card: Card) {
+        pannel.firstCardPuttedNotify(card: card)
+    }
+    
+    func cardsPuttedNotify(by player: Int, card: [Card]) {
+        pannel.cardsPuttedNotify(by: player, card: card)
+    }
+    
+    func exchangeNotify(from player1: Int, to player2: Int) {
+        pannel.exchangeNotify(from: player1, to: player2)
+    }
+    
+    func hardcodeSuitNotify(newSuit: CardSuit) {
+        pannel.hardcodeSuitNotify(newSuit: newSuit)
+    }
+    
+    func playerWinNotify(_ player: Int) {
+        pannel.playerWinNotify(player)
+    }
+    
+    func reverseNotify() {
+        pannel.reverseNotify()
     }
     
 }

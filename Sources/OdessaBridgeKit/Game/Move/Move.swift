@@ -8,5 +8,5 @@
 import Foundation
 
 protocol Move {
-    func make(for player: Player)
+    func make(for player: Player) async
 }

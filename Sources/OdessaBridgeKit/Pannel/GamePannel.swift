@@ -17,7 +17,7 @@ public protocol GamePannel: AnyObject {
     func nextPlayer(playerIndex: Int)
     func putFirstCard()
     func putCards(_ cards: [Card])
-    func makeExchange(with player: Int, for card: Card, onRelease: @escaping (Card) -> Void)
+    func makeExchange(with player: Int, for card: Card, onRelease: @escaping (Card) -> Void) async
     func hardcodeSuit(_ suit: CardSuit)
     
 }

@@ -25,29 +25,28 @@ class Game {
         self.players = players
     }
     
-    func start() {
+    func start() async {
         log?.log("Game is started", status: .start)
-        firstSet()
+        await firstSet()
     }
     
-    private func firstSet() {
+    private func firstSet() async {
         deck = Card.deck.shuffled()
         players.enumerated().forEach({ index, player in
             player.index = index
             player.gamePannel = self
             player.stack.append(FirstSet(isLast: index == players.count - 1))
         })
-        callMove()
+        await callMove()
     }
     
-    private func callMove() {
-        players[currentMoveIndex].inAct()
+    private func callMove() async {
+        await players[currentMoveIndex].inAct()
         if players.count > 1 {
-            if players.count == 1 {
-                log?.log("finish")
-                return
-            }
-            callMove()
+            await callMove()
+        } else {
+            log?.log("Game finished", status: .finish)
+            players.forEach({ $0.gameFinishedNotify() })
         }
     }
     
@@ -76,23 +75,28 @@ extension Game: GamePannel {
             (0..<count).forEach({ _ in cards.append(deck.removeFirst()) })
             players[playerIndex].pushCards(cards)
             log?.log("Player\(playerIndex) get cards: \(cards.map({ $0.description }))")
+            players.forEach({ $0.getCardsNotify(player: currentMoveIndex, count: count) })
         } else {
             let lastInField = field.removeLast()
             deck += field
             field = [lastInField]
             deck = deck.shuffled()
+            players.forEach({ $0.deckRefreshNotify() })
+            getCards(count: count, for: playerIndex)
         }
     }
     
     func nextPlayer(playerIndex: Int) {
         currentMoveIndex = (playerIndex + direction + players.count) % players.count
         log?.log("Next move is in player\(currentMoveIndex) with cards \(players[currentMoveIndex].cardsInHand.map({ $0.description }))")
+        players.forEach({ $0.moveTransferNotify(to: currentMoveIndex) })
     }
     
     func putFirstCard() {
         field.append(deck.removeFirst())
         log?.log("Card \(field[0].description) was putted automatically")
         setPuttedCardsEffect([field[0]])
+        players.forEach({ $0.firstCardPuttedNotify(card: field[0]) })
     }
     
     func putCards(_ cards: [Card]) {
@@ -100,17 +104,20 @@ extension Game: GamePannel {
         log?.log("Player\(currentMoveIndex) put cards \(cards.map({ $0.description }))")
         field += cards
         setPuttedCardsEffect(cards)
+        players.forEach({ $0.cardsPuttedNotify(by: currentMoveIndex, card: cards) })
     }
     
-    func makeExchange(with player: Int, for card: Card, onRelease: @escaping (Card) -> Void) {
+    func makeExchange(with player: Int, for card: Card, onRelease: @escaping (Card) -> Void) async {
         players[player].stack.insert(MandatoryExchange(cardIn: card, onRelease: onRelease), at: 0)
-        players[player].inAct()
+        await players[player].inAct()
         log?.log("Player\(currentMoveIndex) push card \(card.description) for player\(player)")
+        players.forEach({ $0.exchangeNotify(from: currentMoveIndex, to: player) })
     }
     
     func hardcodeSuit(_ suit: CardSuit) {
         hardcoddedSuite = suit
         log?.log("Player\(currentMoveIndex) choose \(suit) suit")
+        players.forEach({ $0.hardcodeSuitNotify(newSuit: suit) })
     }
     
     private func setPuttedCardsEffect(_ cards: [Card]) {
@@ -120,10 +127,12 @@ extension Game: GamePannel {
             if cards.count % 2 == 1 {
                 direction *= -1
                 log?.log("Reverse direction")
+                players.forEach({ $0.reverseNotify() })
             }
             players[currentMoveIndex].stack.insert(Skip(), at: 0)
         case .three(suit: _):
-            (0..<cards.count).forEach({ _ in players[currentMoveIndex].stack.insert(Exchange(), at: 0) })
+            players[currentMoveIndex].stack.insert(Skip(), at: 0)
+            // (0..<cards.count).forEach({ _ in players[currentMoveIndex].stack.insert(Exchange(), at: 0) })
         case .four(suit: _):
             players[currentMoveIndex].stack.insert(Skip(), at: 0)
         case .five(suit: _):
@@ -199,6 +208,7 @@ extension Game: GamePannel {
     
     private func win() {
         log?.log("Player\(currentMoveIndex) WIN!!!")
+        players.forEach({ $0.playerWinNotify(currentMoveIndex) })
         players.remove(at: currentMoveIndex)
         players.enumerated().forEach({ index, player in
             player.index = index

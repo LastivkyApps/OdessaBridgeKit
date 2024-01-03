@@ -9,8 +9,8 @@ import Foundation
 
 public class PutCard: Move {
     
-    func make(for player: Player) {
-        if let cards = player.chooseCards() {
+    func make(for player: Player) async {
+        if let cards = await player.chooseCards() {
             player.gamePannel?.putCards(cards)
         } else {
             player.stack.append(TakeCard())

@@ -16,18 +16,30 @@ protocol Player: AnyObject {
     
     var cardsInHand: [Card] { get }
     
-    func inAct()
+    func inAct() async
     
     func pushCards(_ cards: [Card])
     
-    func chooseExchangeCard() -> Card
+    func chooseExchangeCard() async -> Card
     
-    func choosePlayerForExchange() -> Int
+    func choosePlayerForExchange() async -> Int
     
     func getRandomCard() -> Card
     
-    func chooseSuit() -> CardSuit
+    func chooseSuit() async -> CardSuit
     
-    func chooseCards() -> [Card]?
+    func chooseCards() async -> [Card]?
+    
+    
+    func gameFinishedNotify()
+    func getCardsNotify(player: Int, count: Int)
+    func deckRefreshNotify()
+    func moveTransferNotify(to plyaer: Int)
+    func firstCardPuttedNotify(card: Card)
+    func cardsPuttedNotify(by player: Int, card: [Card])
+    func exchangeNotify(from player1: Int, to player2: Int)
+    func hardcodeSuitNotify(newSuit: CardSuit)
+    func playerWinNotify(_ player: Int)
+    func reverseNotify()
     
 }
