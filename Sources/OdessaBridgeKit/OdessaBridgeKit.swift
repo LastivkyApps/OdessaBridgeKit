@@ -1,6 +1,7 @@
 // The Swift Programming Language
 // https://docs.swift.org/swift-book
 
+@available(macOS 10.15, *)
 public class OdessaBridgeSeanse: GameLog {
     
     private var currentGame: Game?
@@ -18,7 +19,7 @@ public class OdessaBridgeSeanse: GameLog {
         let game = GameFactory().onePlayerGame(pannel: pannel, botsCount: botsCount)
         currentGame = game
         game.log = self
-        if #available(macOS 10.15, *) {
+        if #available(iOS 13.0, *) {
             Task {
                 await game.start()
             }
