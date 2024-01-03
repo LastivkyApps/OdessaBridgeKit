@@ -60,7 +60,13 @@ class RealPlayer: Player {
     }
     
     func chooseCards() async -> [Card]? {
-        await pannel.chooseCards()
+        let cards = await pannel.chooseCards()
+        if let cards {
+            for card in cards {
+                cardsInHand.removeAll(where: { $0 == card })
+            }
+        }
+        return cards
     }
     
     func gameFinishedNotify() {
